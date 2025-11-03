@@ -1,0 +1,71 @@
+<app-header></app-header>
+
+<div class="flexbox-exterior-container">
+    <div class="flexbox-responsive-interior-container flexbox-aling-left">
+        <div class="text-align-center">
+            <h5>App de toma de datos</h5>
+        </div>
+
+        <p>App para tomar datos sobre el terreno, 
+            almacenarlos en el dispositivo, y enviarlos al servidor
+            cuando se tenga conexion a internet</p>
+
+        <p>Una vez suba los datos a internet, se le enviará
+            un email para poder consultarlos.</p>
+        
+        <p>Igualmente se se enviará un email a los técnicos
+            para que puedan revisar los datos del predio, 
+            e iniciar el expediente.</p>
+
+        <p>Para subir datos al servidor necesita una cuenta,
+            que puede obtener <a routerLink="/app_user">en este enlace</a></p>
+        
+        <!--
+         <p>A todos los propietarios de los predios se les creará 
+            igualmente una cuenta para que puedan revisar sus datos
+            y propiedades. Se les enviará un email de aviso,
+            con un enlace para que establezcan su contraseña de 
+            acceso.</p>           
+        -->
+
+        <p>Lea las capacidades de la app en las notas de cada versión. 
+            Las vesiones superiores siempre añaden capacidades sobre la versión anterior:</p>
+    </div>
+    <div class="flexbox-responsive-interior-container">
+        @if (lastMobileAppVersionModel.id>-1){
+            <h6>Descargue la última versión de la App</h6>
+            <div class="flex_container">
+                <div>
+                    <a [href]="getUrlDescargaApp()"><img class="logo_app" src="images/descargaApp.png" matTooltip="Descargar App"></a>
+                </div>
+                <div class="margin_left_30px">
+                    <p> <b>Versión: </b>{{lastMobileAppVersionModel.version}}</p>
+                    <p> <b>Fecha: </b>{{lastMobileAppVersionModel.fecha | date:'yyyy/MM/dd hh:mm a'}}</p>
+                </div>
+            </div>
+        }@else {
+            <h6>No hay versiones de la app publicadas actualmente</h6>
+        }
+    </div>
+    <div class="flexbox-responsive-interior-container flexbox-aling-left">
+        @if (lastMobileAppVersionModel.id>-1 && allAppversionsNotes.length > 0){
+            <h6>Notas sobre las versiones</h6>
+            <table>
+                <tr>
+                  <th>Version</th>
+                  <th>Nota</th>
+                </tr>
+                @for (note of allAppversionsNotes;track $index){
+                    <tr>
+                      <td>{{note.mobileappversion}}</td>
+                      <td>{{note.nota}}</td>
+                    </tr>
+                }
+            </table>
+        }@else {
+            <h6>No hay notas que describan la app</h6>
+        }
+    </div>
+    <br>
+</div>
+<app-footer></app-footer>

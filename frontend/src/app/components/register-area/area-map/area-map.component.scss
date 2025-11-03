@@ -1,0 +1,25 @@
+google-map {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.selected-area {
+  margin-top: 0.5rem;
+  font-style: italic;
+  color: #555;
+}
+
+.container-buttons-polygon {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  button {
+    width: fit-content;
+    background: #e71818;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+}

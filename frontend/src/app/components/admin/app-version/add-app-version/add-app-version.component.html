@@ -1,0 +1,42 @@
+<div class="flexbox-exterior-container">
+    <div class="flexbox-responsive-interior-container">
+        <div class="text-align-center">
+            <h5>Subir nueva versión de App de toma de datos</h5>
+        </div>
+        <form [formGroup]="controlsGroup">
+            <mat-form-field>
+                <input matInput placeholder="Número de versión*" type="number"  [formControl]="$any(controlsGroup).get('appVersion')" name="username">
+                @if($any(controlsGroup).get('appVersion').hasError('required')){<mat-error>Número de versión obligatoria.</mat-error>}
+              </mat-form-field>
+  
+            <input hidden type="file" #fileInput (change)="onFileInput(fileInput.files)" />
+            
+            <p #fileNameParagraph [className]="getFilenameParagraphClass()">{{ file ? file.name : 'Fichero de versión no seleccionado' }}</p>
+            
+            <button mat-raised-button (click)="fileInput.click()">
+                {{ file ? 'Seleccionar otro fichero' : 'Seleccionar fichero de versión' }}
+            </button>
+            @for (controlName of controlNames;track $index){
+                <mat-form-field>
+                    <textarea matInput placeholder="Introduzca cometario {{$index}}*" [formControl]="$any(controlsGroup).get(controlName)"></textarea>
+                    @if($any(controlsGroup).get(controlName).hasError('required')){<mat-error>Debe escribir un comentario.</mat-error>}
+                </mat-form-field>
+            }
+            
+            @if (uploadProgress>0){
+                <mat-progress-bar mode="determinate" value="{{uploadProgress}}"></mat-progress-bar>
+            }
+            <br>
+            <div class="flexbo-row">
+                <button mat-raised-button matTooltip="Añadir nota"  (click)="addnote()">Añadir nota</button>
+                <button mat-raised-button matTooltip="Eliminar última nota" [disabled]="controlNames.length<1" (click)="removeNote()">Eliminar última nota</button>
+                <button mat-raised-button matTooltip="Enviar datos"  [disabled]="controlNames.length<1 || !controlsGroup.valid"  (click)="send()">Subir versión</button>
+            </div>
+        </form>
+        @if (componentMessages.length > 0){
+            <app-component-message [componentMessages]="componentMessages"></app-component-message>
+        } 
+    </div>
+
+</div>
+

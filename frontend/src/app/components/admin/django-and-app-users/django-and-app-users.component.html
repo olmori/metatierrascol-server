@@ -1,0 +1,66 @@
+<app-header></app-header>
+
+<div class="flexbox-exterior-container">
+    <div class="flexbox-responsive-interior-container-with100-900">
+        <h5 class="text-align-center">Selección de usuarios</h5>
+
+        <h6 class="text-align-center">Se recuperarrán un máximo de filas de: {{numero_maximo_de_filas_recuperadas}}</h6>
+        <div class="selector-flexbox-container">
+            <div class="width50porciento">
+                <h6 class="text-align-center">Buscar usuarios</h6>
+                <p class="fontsize18">Introduzca uno o varios criterios de selección:</p>
+                <p>Nombre de usuario, o email, o parte de él:</p>
+                <mat-form-field>
+                    <input matInput placeholder="Email" [formControl]="username">
+                </mat-form-field>
+                <div class="text-align-center">
+                    <mat-button-toggle-group (change)="onStatusSelected($event.value)">
+                        <mat-button-toggle matTooltip="El usuario está activo" value="true">Activo</mat-button-toggle>
+                        <mat-button-toggle matTooltip="El usuario está inactivo" value="false">Inactivo</mat-button-toggle>
+                    </mat-button-toggle-group>
+                    <br>
+                    <mat-button-toggle-group (change)="onEmailSelected($event.value)">
+                        <mat-button-toggle matTooltip="El usuario confirmó su email" value="true">Email confirmado</mat-button-toggle>
+                        <mat-button-toggle matTooltip="El usuario no confirmó su email" value="false">Email sin confirmar</mat-button-toggle>
+                    </mat-button-toggle-group>
+                    <br>
+                    <mat-button-toggle-group (change)="onSuperUserSelected($event.value)">
+                        <mat-button-toggle matTooltip="El usuario es superusuario" value="true">Super usuario</mat-button-toggle>
+                        <mat-button-toggle matTooltip="El usuario no es superusuario" value="false">No super usuario</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+                <br>
+                <div class="text-align-center">
+                    <button mat-raised-button  (click)="getUsers(1)">Buscar</button>
+                </div>
+    
+            </div>
+            <div class="width50porciento">
+                <h6 class="text-align-center">Obtener usuarios de un grupo</h6>
+                <p class="fontsize18">Seleccione el grupo:</p>
+                <div class="text-align-center">
+                    <mat-button-toggle-group (change)="onGrupSelected($event.value)" name="selected_group_name" aria-label="Nombre del grupo" appearance="legacy" vertical>
+                        @for(group of groups;track $index){
+                            <mat-button-toggle value="{{group.id}}">{{group.name}}</mat-button-toggle>                        
+                        }
+                    </mat-button-toggle-group>
+                    <div class="text-align-center">
+                        <button mat-raised-button  (click)="getUsers(2)" [disabled]="selectedGroupId < 0">Buscar</button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <br>
+        @if (users.length > 0){
+            <h6 class="text-align-center">Usuarios seleccionados</h6>
+            @for (user of users;track $index){
+                <app-django-and-app-user [user]="user" [groups]="groups"></app-django-and-app-user>
+            }
+        }@else {
+            <h6 class="text-align-center">No hay usuarios seleccionados</h6>
+        }
+    </div>
+</div>
+<app-footer></app-footer>

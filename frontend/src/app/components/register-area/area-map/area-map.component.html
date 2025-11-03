@@ -1,0 +1,18 @@
+<h2>Ubicación de la Vivienda</h2>
+<google-map
+  height="400px" width="100%"
+  [center]="center"
+  [zoom]="zoom"
+  (mapClick)="addVertex($event)">
+
+  @if (polygonClosed && polygonPath.length >= 3) {
+    <map-polygon
+      [paths]="polygonPath"
+      [options]="{ fillColor: '#2196f3', fillOpacity: 0.4, strokeColor: '#1976d2' }">
+    </map-polygon>
+  }
+
+  @for (vertex of polygonPath; track vertex) {
+    <map-marker [position]="vertex"></map-marker>
+  }
+</google-map>

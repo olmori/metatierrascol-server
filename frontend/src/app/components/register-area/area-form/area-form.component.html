@@ -1,0 +1,54 @@
+<h2>Formulario de Registro</h2>
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <div class="form-group"><label>Nombres</label><input formControlName="nombres"></div>
+  <div class="form-group"><label>Apellidos</label><input formControlName="apellidos"></div>
+  <div class="form-group">
+    <label>Tipo Documento</label>
+    <select formControlName="tipoDocumento">
+      <option value="">Seleccione</option>
+      <option value="DNI">DNI</option>
+      <option value="Pasaporte">Pasaporte</option>
+    </select>
+  </div>
+  <div class="form-group"><label>Número Documento</label><input formControlName="numeroDocumento"></div>
+  <div class="form-group"><label>Dirección</label><input formControlName="direccion"></div>
+
+  <label>Forma de registrar polígono:</label>
+  <select formControlName="entryMethod" (change)="onEntryMethodChange()">
+    <option value="map">Usar Mapa</option>
+    <option value="manual">Ingresar Manual</option>
+  </select>
+
+  @if (entryMethod === 'manual') {
+    <div>
+      <input #latInput placeholder="Latitud">
+      <input #lngInput placeholder="Longitud">
+      <button type="button" (click)="addManualCoordinate(latInput.value, lngInput.value)">Agregar</button>
+    </div>
+    <ul>
+      @for (c of manualCoordinates.controls; track c) {
+        <li>
+          {{ c.value.lat }}, {{ c.value.lng }}
+          <button (click)="removeManualCoordinate($index)">Eliminar</button>
+        </li>
+      }
+    </ul>
+  }
+
+  @if (coordinates().length >= 3) {
+    <button type="button" (click)="closePolygon()">Cerrar Polígono</button>
+  }
+  @if (coordinates().length > 0) {
+    <button type="button" (click)="clearPolygon()">Limpiar Polígono</button>
+  }
+
+  <app-area-map
+    [coordinates]="coordinates()"
+    [mode]="entryMethod"
+    [polygonClosed]="polygonClosed()"
+    (vertexAdded)="addVertexFromMap($event)">
+  </app-area-map>
+
+  <textarea readonly rows="5">{{ geoJson() }}</textarea>
+  <button type="submit">Guardar</button>
+</form>

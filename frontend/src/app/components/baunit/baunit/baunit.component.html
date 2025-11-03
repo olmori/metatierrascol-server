@@ -1,0 +1,19 @@
+<div class="grid_container">
+    <p><b>Id:</b> {{baunit.id}}</p>
+    <p><b>Creado por: </b>{{baunit.creado_por}}</p>
+    <p><b>Fecha creacion: </b>{{baunit.fecha_creacion | date:'yyyy/MM/dd hh:mm a'}}</p>
+    <p><b>Nombre: </b>{{baunit.nombre}}</p>
+    <p><b>Provincia: </b>{{baunit.provincia}}</p>
+    <p><b>Departamento: </b>{{baunit.departamento}}</p>
+    <p><b>Sector predio: </b>{{baunit.sector_predio}}</p>
+    <p><b>Municipio: </b>{{baunit.municipio}}</p>
+    <p><b>Vereda: </b>{{baunit.vereda}}</p>
+    <p><b>Numero predial: </b>{{baunit.numero_predial}}</p>
+    <p><b>Tipo:</b> {{baunit.tipo}}</p>
+    <p><b>Complemento: </b>{{baunit.complemento}}</p>
+    <p><b>Estado expediente: </b>{{baunit.estado_expediente}}</p>
+    <p><b>Longitud: </b>{{baunit.longitud}}</p>
+    <p><b>Latitud: </b>{{baunit.latitud}}</p>
+    <p><b>Numero catastral: </b>{{baunit.id}}</p>
+    <p><b>Descargar: </b><a [href]="getUrlDownload()"><mat-icon aria-hidden="false" aria-label="Descargar" fontIcon="download" matTooltip="Descargar"></mat-icon></a></p>
+</div>

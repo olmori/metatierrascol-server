@@ -1,0 +1,22 @@
+<app-header></app-header>
+
+<div class="flexbox-exterior-container">
+    <div class="flexbox-responsive-interior-container">
+        <h5>Configuraciones del servidor</h5>
+        <div>
+            <h6 class="color_black">Cambiar estos parámetros cambia el comportamiento del servidor.</h6>
+            <h6 class="color_black">Los valores posibles son True, true, False, false, o un número.</h6>
+        </div>
+    </div>
+    <div class="flexbox-responsive-interior-container-with100">
+        @if (settings.length > 0){
+            @for (setting of settings;track $index){
+                <app-api-setting [setting]="setting"></app-api-setting>
+                <hr>
+            }
+        }@else {
+            <h6>No hay configuraciones</h6>
+        }
+    </div>
+</div>
+<app-footer></app-footer>

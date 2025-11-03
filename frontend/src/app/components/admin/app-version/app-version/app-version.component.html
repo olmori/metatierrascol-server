@@ -1,0 +1,32 @@
+
+<div class="padding_bottom10px width100">
+    <mat-card appearance="outlined" class="width100">
+        <div class="text-align-center">
+            <h6>Version: {{mobileAppVersionModel.version}}</h6>
+        </div>
+        <mat-card-content>
+            <div class="grid_container">
+                <p> <b>Id: </b>{{mobileAppVersionModel.id}}</p>
+                <p> <b>Fecha: </b>{{mobileAppVersionModel.fecha | date:'yyyy/MM/dd hh:mm a'}}</p>
+                <p> <b>Creado por: </b>{{mobileAppVersionModel.creado_por}}</p>
+                <p> <b>Publicar:  </b>{{mobileAppVersionModel.publicar}}</p>
+            </div>
+            <div class="text-align-center">
+                <button mat-raised-button><a [href]="getUrlDescargaApp()">Descargar</a></button>
+                <button mat-raised-button *showForRoles="showForRoles('app.version.component.button_publish')" (click)="publicarAppVersion()">Publicar</button>
+                <button mat-raised-button *showForRoles="showForRoles('app.version.component.button_unpublish')" (click)="desPublicarAppVersion()">Despublicar</button>
+            </div>
+            <hr>
+            <p><b>Notas de la versión:</b></p>
+            <ul>
+                @for (nota of mobileAppVersionNotes;track $index){
+                    <li>{{nota.nota}}</li>
+                }
+            </ul>
+
+            @if (componentMessages.length > 0){
+                <app-component-message [componentMessages]="componentMessages"></app-component-message>
+            }
+        </mat-card-content>
+    </mat-card>    
+</div>

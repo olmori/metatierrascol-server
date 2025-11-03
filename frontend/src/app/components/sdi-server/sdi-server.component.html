@@ -1,0 +1,93 @@
+<div class="sdi-server-container">
+  <!-- Formulario para agregar servicios WMS -->
+  <mat-card class="add-service-card">
+    <mat-card-header>
+      <mat-card-title class="mat-headline-6 custom-card-title">
+  Agregar Servicio WMS
+</mat-card-title>
+
+      <mat-card-subtitle>Configure un nuevo servidor WMS para acceder a sus capas</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="wmsForm" (ngSubmit)="addWMSService()" class="wms-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Nombre del servicio</mat-label>
+            <input matInput formControlName="name" placeholder="Ej: IGN Colombia">
+            <mat-error *ngIf="wmsForm.get('name')?.hasError('required')">
+              El nombre es obligatorio
+            </mat-error>
+            <mat-error *ngIf="wmsForm.get('name')?.hasError('minlength')">
+              El nombre debe tener al menos 3 caracteres
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>URL del servicio WMS</mat-label>
+            <input matInput formControlName="url" placeholder="https://ejemplo.com/wms">
+            <mat-error *ngIf="wmsForm.get('url')?.hasError('required')">
+              La URL es obligatoria
+            </mat-error>
+            <mat-error *ngIf="wmsForm.get('url')?.hasError('pattern')">
+              La URL debe ser válida (http:// o https://)
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" 
+                  [disabled]="!wmsForm.valid || loading">
+            <mat-icon *ngIf="loading">hourglass_empty</mat-icon>
+            <mat-icon *ngIf="!loading">add</mat-icon>
+            {{ loading ? 'Conectando...' : 'Agregar Servicio' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Servicios WMS desde el backend -->
+  <mat-card class="services-list-card" *ngIf="backendWmsServices.length > 0">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>cloud</mat-icon> Servicios WMS del Servidor
+      </mat-card-title>
+      <mat-card-subtitle>{{ backendWmsServices.length }} servicio(s)</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Spinner de carga -->
+      <div class="loading-container" *ngIf="isLoadingBackendServices">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Cargando servicios del servidor...</p>
+      </div>
+
+      <!-- Lista de servicios del backend -->
+      <mat-list class="services-list backend-services-list" *ngIf="!isLoadingBackendServices">
+        <mat-list-item *ngFor="let service of backendWmsServices" class="service-item backend-service-simple">
+          <mat-icon matListItemIcon class="backend-icon">cloud</mat-icon>
+          <div matListItemTitle class="backend-service-name">{{ service.name }}</div>
+
+          <button mat-icon-button
+                  color="warn"
+                  (click)="deleteBackendService(service)"
+                  matTooltip="Eliminar servicio"
+                  [disabled]="loading"
+                  class="delete-button">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Mensaje cuando no hay servicios -->
+  <mat-card *ngIf="backendWmsServices.length === 0 && !isLoadingBackendServices" class="empty-state">
+    <mat-card-content class="empty-content">
+      <mat-icon class="empty-icon">cloud_off</mat-icon>
+      <h3>No hay servicios WMS configurados</h3>
+      <p>Agregue un servicio WMS usando el formulario de arriba</p>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,77 @@
+<div class="datagrid-container">
+  <div *ngIf="userDataList().length === 0" class="no-data">
+    <mat-icon>person_off</mat-icon>
+    <p>No hay registros de usuarios</p>
+  </div>
+
+  <mat-table [dataSource]="userDataList()" class="user-table" *ngIf="userDataList().length > 0">
+    
+    <!-- Columna Nombres -->
+    <ng-container matColumnDef="nombres">
+      <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.nombres }}</mat-cell>
+    </ng-container>
+
+    <!-- Columna Apellidos -->
+    <ng-container matColumnDef="apellidos">
+      <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.apellidos }}</mat-cell>
+    </ng-container>
+
+    <!-- Columna Tipo Documento -->
+    <ng-container matColumnDef="tipoDocumento">
+      <mat-header-cell *matHeaderCellDef>Tipo Doc.</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.tipoDocumento }}</mat-cell>
+    </ng-container>
+
+    <!-- Columna Número Documento -->
+    <ng-container matColumnDef="numeroDocumento">
+      <mat-header-cell *matHeaderCellDef>Número Doc.</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.numeroDocumento }}</mat-cell>
+    </ng-container>
+
+    <!-- Columna Dirección -->
+    <ng-container matColumnDef="direccion">
+      <mat-header-cell *matHeaderCellDef>Dirección</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.direccion }}</mat-cell>
+    </ng-container>
+
+    <!-- Columna Acciones -->
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+      <mat-cell *matCellDef="let element" class="action-cell">
+        <button mat-icon-button 
+                color="primary"
+                (click)="viewInMap(element)"
+                matTooltip="Ver en Mapa">
+          <mat-icon>map</mat-icon>
+        </button>
+        
+        <button mat-icon-button 
+                color="accent"
+                (click)="edit(element)"
+                matTooltip="Editar">
+          <mat-icon>edit</mat-icon>
+        </button>
+        
+        <button mat-icon-button 
+                color="primary"
+                (click)="exportGeoJSON(element)"
+                matTooltip="Exportar GeoJSON">
+          <mat-icon>download</mat-icon>
+        </button>
+        
+        <button mat-icon-button 
+                color="warn"
+                (click)="delete(element.id)"
+                matTooltip="Eliminar">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    
+  </mat-table>
+</div>

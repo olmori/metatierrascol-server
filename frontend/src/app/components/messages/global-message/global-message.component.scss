@@ -1,0 +1,18 @@
+.scrollContent {
+    background-color: gray;
+    height: 100px;
+    overflow-y: scroll;
+    font-weight: bold;
+    text-align: left;
+    color: white;
+}
+
+.success {
+    color:rgb(170, 170, 233);
+}
+.info{
+    color: white;
+}
+.error{
+    color: rgb(226, 163, 163);
+}

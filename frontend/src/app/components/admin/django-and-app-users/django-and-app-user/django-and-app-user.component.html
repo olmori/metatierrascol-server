@@ -1,0 +1,39 @@
+<div class="exterior">
+    
+    <p class="padding10 color_naranja"><b>Datos generales:</b></p>
+    <div class="grid_container">
+        <p>Username: <b>{{user.username}}</b></p>
+        <p>Activo: {{user.is_active}} <mat-slide-toggle [(ngModel)]="is_active" (change)="onChangeIsActive($event)" [disabled]="isItsOwnAdminSession()"></mat-slide-toggle></p>
+        <p>Fecha alta: {{user.date_joined | date:'yyyy/MM/dd hh:mm a'}}</p>
+        <p>Email confirmado: {{user.email_confirmed}} <mat-slide-toggle [(ngModel)]="email_confirmed" (change)="onChangeEmailConfirmed($event)"></mat-slide-toggle></p>
+        <p>Fecha último login: {{user.last_login | date:'yyyy/MM/dd hh:mm a'}}</p>
+        <p>Superusuario: {{user.is_superuser}} 
+            <mat-slide-toggle [(ngModel)]="is_superuser" 
+            (change)="onChangeIsSuperUser($event)"
+            [disabled]="isItsOwnAdminSession()"
+            ></mat-slide-toggle></p>
+        <p>Id Django: {{user.user_id}}</p>
+        <p>Id App: {{user.app_user_id}}</p>
+    
+    </div>
+
+    <div class="padding10 border_box">
+        <p class="color_naranja"><b>Interés en usar la plataforma:</b></p>
+        <p>{{user.interest}}</p>
+        <p class="color_naranja"><b>Grupos:</b></p>
+    </div>
+    <div class="grid_container">
+        <p>Administrador <mat-slide-toggle [(ngModel)]="admin" (change)="onChangeGroup('admin',$event)" [disabled]="isItsOwnAdminSession()"></mat-slide-toggle></p>
+        <p>Agrimensor <mat-slide-toggle [(ngModel)]="agrimensor" (change)="onChangeGroup('agrimensor',$event)"></mat-slide-toggle></p>
+        <p>Gestor catastral <mat-slide-toggle [(ngModel)]="gestor_catastral" (change)="onChangeGroup('gestor_catastral',$event)"></mat-slide-toggle></p>
+        <p>IGAC <mat-slide-toggle [(ngModel)]="igac" (change)="onChangeGroup('igac',$event)"></mat-slide-toggle></p>
+        <p>Receptor emails cuando un usuario confirma su email <mat-slide-toggle [(ngModel)]="receptor_email_usuario_confirma_email" (change)="onChangeGroup('receptor_email_usuario_confirma_email',$event)"></mat-slide-toggle></p>
+        <p>Forjando futuros <mat-slide-toggle [(ngModel)]="forjando_futuros" (change)="onChangeGroup('forjando_futuros',$event)"></mat-slide-toggle></p>
+        <p>Propietario <mat-slide-toggle [(ngModel)]="propietario" (change)="onChangeGroup('propietario',$event)"></mat-slide-toggle></p>
+        <p>ANT <mat-slide-toggle [(ngModel)]="ant" (change)="onChangeGroup('ant',$event)"></mat-slide-toggle></p>
+        <p>SNR <mat-slide-toggle [(ngModel)]="snr" (change)="onChangeGroup('snr',$event)"></mat-slide-toggle></p>
+        <p>Receptor emails cuando un usuario se registra <mat-slide-toggle [(ngModel)]="receptor_email_nuevos_usuarios" (change)="onChangeGroup('receptor_email_nuevos_usuarios',$event)"></mat-slide-toggle></p>
+        <p>Receptor email cuando un usuario sube un predio <mat-slide-toggle [(ngModel)]="receptor_email_usuario_sube_predio" (change)="onChangeGroup('receptor_email_usuario_sube_predio',$event)"></mat-slide-toggle></p>
+    </div>
+    <app-component-message [componentMessages]="componentMessages"></app-component-message>
+</div>

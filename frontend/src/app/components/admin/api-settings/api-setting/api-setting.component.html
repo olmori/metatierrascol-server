@@ -1,0 +1,22 @@
+
+@if (setting.id > 0){
+    <div class="width100 text-align-left">
+        <p><b>Parámetro {{setting.id}}:</b> {{setting.parameter_name}}</p>
+        <p><b>Descripcción:</b> {{setting.help_es}}</p>
+        <div class="flexbox-align-center">
+            <span><b>Valor:</b></span> 
+            <mat-form-field>
+                <input matInput placeholder="Nuevo valor" [formControl]="parameter_value">
+                <mat-error *ngIf="parameter_value.hasError('required')">
+                    El valor es obligatorio.
+                </mat-error>
+            </mat-form-field>
+            <button mat-raised-button  (click)="changeSetting()" 
+            [disabled]="!controlsGroup.valid">Cambiar configuración</button>
+        </div>
+    </div>
+    <div class="text-align-center width100 flexbox-align-center">
+        
+    </div>
+    <app-component-message [componentMessages]="componentMessages"></app-component-message>
+}  

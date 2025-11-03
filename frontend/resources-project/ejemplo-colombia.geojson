@@ -1,0 +1,113 @@
+{
+  "type": "FeatureCollection",
+  "name": "Ejemplo MetaTierras Colombia",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Bogotá D.C.",
+        "tipo": "Capital",
+        "poblacion": 7181469,
+        "area_km2": 1587,
+        "departamento": "Cundinamarca"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0721, 4.7110]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Medellín",
+        "tipo": "Ciudad Principal",
+        "poblacion": 2508452,
+        "area_km2": 380.64,
+        "departamento": "Antioquia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.5636, 6.2442]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Cali",
+        "tipo": "Ciudad Principal", 
+        "poblacion": 2227642,
+        "area_km2": 560.3,
+        "departamento": "Valle del Cauca"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-76.5225, 3.4516]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Barranquilla",
+        "tipo": "Ciudad Principal",
+        "poblacion": 1274250,
+        "area_km2": 166,
+        "departamento": "Atlántico"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.7813, 10.9639]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Cartagena",
+        "tipo": "Ciudad Histórica",
+        "poblacion": 971592,
+        "area_km2": 572,
+        "departamento": "Bolívar"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.5144, 10.3910]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Región Andina Central",
+        "tipo": "Región de Interés",
+        "descripcion": "Zona montañosa central de Colombia"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-76.0, 3.0],
+          [-74.0, 3.0], 
+          [-73.0, 5.0],
+          [-74.0, 7.0],
+          [-76.0, 6.0],
+          [-76.0, 3.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature", 
+      "properties": {
+        "nombre": "Corredor Bogotá-Medellín",
+        "tipo": "Ruta Comercial",
+        "longitud_km": 415,
+        "importancia": "Alta"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-74.0721, 4.7110],
+          [-74.8, 5.2],
+          [-75.2, 5.8],
+          [-75.5636, 6.2442]
+        ]
+      }
+    }
+  ]
+}

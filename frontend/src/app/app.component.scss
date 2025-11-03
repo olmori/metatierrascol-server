@@ -1,0 +1,158 @@
+.menu-container{
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #cf7310;
+    width: 100%;/*If you do not put the 100%, the elements are not separated*/
+}
+
+.menu-left-container{
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.horizontal-menu-items{
+    display: inline-flex;
+    flex-direction: row;
+    background-color: #cf7310;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+.normal-menu-item{
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    user-select: none;
+    min-width: 70px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    height: 32px;
+    margin:0px;
+    padding:0px;
+  }
+
+.vertical-menu-item{
+    display:flex;
+    align-items: center;
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    user-select: none;
+    min-width: 70px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+.login-buttons{
+    min-width: 0px;
+    margin-right: 5px;
+    margin-left:5px;
+    padding: 0px;
+}
+  
+.padding-rigth-10{
+    padding-right: 10px;
+}
+button.normal-menu-item:hover, .vertical-menu-item:hover{
+    background-color: rgb(208, 208, 208) !important;
+  }
+  
+/*Removes the default border radius*/
+.mat-drawer.mat-drawer-end{
+    border-radius: 0px;
+}
+
+.drawer-left-menu-options{
+    display: flex;
+    flex-direction: column;
+    align-content: start;
+}
+
+.drawer-left{
+    width:150px;
+    background-color: #cf7310;
+    border-radius: 0px;
+}
+.drawer-right{
+    width:600px;
+    background-color: rgb(248, 213, 161);
+    border-radius: 0px;
+}
+.height100{
+    height: 95vh;
+}
+
+.border-top-white{
+    border-top: 2px solid white;
+}
+
+/*Must be at the end because overwrites the previous
+rules*/
+
+.menu-right{
+    display: flex;
+    align-items: center;
+}
+
+.color-white{color:white}
+
+.icon-blue{
+    color:blue;
+}
+
+@media all and (max-width:1000px){
+    .menu-left-buton-burguer{display: block;}
+    .hide-less-500{display: none;}
+    .drawer-right{width: 600px;}
+}
+
+@media all and (max-width:600px){
+    .drawer-right{width: 100%;}
+}
+
+@media all and (min-width:1000px){
+    .menu-left-buton-burguer{display: none;}
+    .menu-left-menu-options{display: block;}
+}
+
+button.mat-menu-item {
+    background-color: #cf7310 !important; /* Cambia este color al que prefieras */
+    color: white;
+    font-weight: bolder !important;
+  }
+  
+button.mat-menu-item:hover {
+      background-color: rgb(208, 208, 208) !important;
+      color: #cf7310 !important;
+  }
+
+//Esto cambia el color de fondo del router outlet
+.back-ground-color-gray{
+    background-color: rgb(241, 237, 237);
+  }
+
+.mat-headline-medium, .mat-typography .mat-headline-medium, .mat-typography h5{
+    color: #cf7310 !important;
+}
+h6{
+    color: #cf7310 !important;
+}
+
+
+
+
+.login-content {
+  display: inline-flex;   // o flex, según tu layout
+  align-items: center;    // centra verticalmente icono y texto
+  gap: 6px;               // espacio entre icono y texto
+}
+
+.login-icon {
+  font-size: 26px;        // opcional
+}

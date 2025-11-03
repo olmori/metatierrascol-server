@@ -1,0 +1,16 @@
+
+@if (componentMessages.length > 0){
+    <div class="flexbox-exterior-container">
+        <h6>Mensajes del servidor:</h6>
+    </div>
+
+    <ul class="margin-left-right-50px">
+        @for (message of componentMessages;track $index){
+            <li>
+                <div class={{message.state}}>
+                    {{message.message}}
+                </div> 
+            </li>
+        }
+    </ul>  
+}

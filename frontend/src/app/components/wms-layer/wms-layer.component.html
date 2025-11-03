@@ -1,0 +1,224 @@
+<div class="wms-layer-container">
+  <!-- Sección de controles generales -->
+  <mat-card class="layer-controls-card">
+    <mat-card-header>
+      <mat-card-title class="mat-headline-6 custom-card-title">Control de Capas</mat-card-title>
+      <mat-card-subtitle>
+        {{ activeLayers.length }} capa(s) activa(s) | {{ backendWmsServices.length }} servicio(s) disponible(s)
+      </mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="control-actions">
+        <button mat-raised-button color="primary" (click)="refreshServices()">
+          <mat-icon>refresh</mat-icon>
+          Actualizar Servicios
+        </button>
+        
+        <button mat-raised-button color="warn" 
+                (click)="clearAllLayers()" 
+                [disabled]="activeLayers.length === 0">
+          <mat-icon>clear_all</mat-icon>
+          Limpiar Todo
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Lista de servicios disponibles del Backend -->
+  <mat-card class="available-layers-card" *ngIf="backendWmsServices.length > 0 || isLoadingBackendServices">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>cloud</mat-icon>
+        Capas Disponibles
+      </mat-card-title>
+      <mat-card-subtitle>Servicios WMS del servidor - Active los servicios para ver sus capas</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Spinner de carga -->
+      <div class="loading-container" *ngIf="isLoadingBackendServices">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Cargando servicios del servidor...</p>
+      </div>
+
+      <!-- Lista de servicios del backend -->
+      <div *ngIf="!isLoadingBackendServices">
+        <mat-expansion-panel *ngFor="let service of backendWmsServices" class="backend-service-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="backend-service-title">
+              <mat-icon class="service-icon">dns</mat-icon>
+              <span class="service-name">{{ service.name }}</span>
+              <mat-slide-toggle
+                [checked]="service.enabled"
+                (change)="toggleBackendWmsService(service)"
+                (click)="$event.stopPropagation()"
+                [disabled]="!!service.isLoadingLayers"
+                color="primary"
+                class="service-toggle">
+              </mat-slide-toggle>
+            </mat-panel-title>
+            <!--
+            <mat-panel-description>
+              <span class="service-url-preview">{{ service.base_url }}</span>
+            </mat-panel-description>
+            -->
+          </mat-expansion-panel-header>
+
+          <!-- Contenido: capas del servicio -->
+          <div class="backend-service-content" *ngIf="service.enabled">
+            <!-- Spinner de carga de capas -->
+            <div class="loading-container" *ngIf="service.isLoadingLayers">
+              <mat-spinner diameter="30"></mat-spinner>
+              <p>Cargando capas del servicio...</p>
+            </div>
+
+            <!-- Lista de capas -->
+            <div class="backend-layers-list" *ngIf="!service.isLoadingLayers && service.layers && service.layers.length > 0">
+              <div class="backend-layer-item" *ngFor="let layer of service.layers">
+                <div class="layer-header-row">
+                  <mat-slide-toggle
+                    [checked]="layer.backendVisible"
+                    (change)="toggleBackendLayerVisibility(service, layer)"
+                    color="primary"
+                    class="layer-toggle">
+                    <span class="layer-title">{{ layer.title || layer.name }}</span>
+                  </mat-slide-toggle>
+                </div>
+
+                <div class="layer-metadata" *ngIf="layer.name !== layer.title">
+                  <p class="layer-code">
+                    <strong>Código:</strong> {{ layer.name }}
+                  </p>
+                </div>
+
+                <!-- SRS soportados
+                <div class="layer-srs" *ngIf="layer.supportedCrs && layer.supportedCrs.length > 0">
+                  <mat-chip-listbox class="srs-list">
+                    <mat-chip-option *ngFor="let srs of layer.supportedCrs.slice(0, 3)">
+                      {{ srs }}
+                    </mat-chip-option>
+                    <mat-chip-option *ngIf="layer.supportedCrs.length > 3" disabled>
+                      +{{ layer.supportedCrs.length - 3 }} más
+                    </mat-chip-option>
+                  </mat-chip-listbox>
+                </div>
+                -->
+              </div>
+            </div>
+
+            <!-- Mensaje cuando no hay capas -->
+            <div class="no-layers-message" *ngIf="!service.isLoadingLayers && (!service.layers || service.layers.length === 0)">
+              <mat-icon>info</mat-icon>
+              <p>No se encontraron capas para este servicio</p>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Lista de capas activas con controles -->
+  <mat-card class="active-layers-card" *ngIf="activeLayers.length > 0">
+    <mat-card-header>
+      <mat-card-title>Capas Activas</mat-card-title>
+      <mat-card-subtitle>Administre las propiedades y orden de visualización</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="active-layers-list">
+        <div class="active-layer-item" *ngFor="let activeLayer of activeLayers; let i = index">
+          <div class="layer-header">
+            <div class="layer-title-section">
+              <mat-slide-toggle 
+                [checked]="activeLayer.active"
+                (change)="toggleLayerActive(activeLayer)"
+                color="primary">
+              </mat-slide-toggle>
+              
+              <div class="layer-title">
+                <h4>{{ activeLayer.layer.title || activeLayer.layer.name }}</h4>
+                <span class="service-name">{{ activeLayer.serviceName }}</span>
+              </div>
+            </div>
+            
+            <div class="layer-actions">
+              <button mat-icon-button 
+                      (click)="moveLayerUp(i)"
+                      [disabled]="i === 0"
+                      matTooltip="Mover arriba">
+                <mat-icon>keyboard_arrow_up</mat-icon>
+              </button>
+              
+              <button mat-icon-button 
+                      (click)="moveLayerDown(i)"
+                      [disabled]="i === activeLayers.length - 1"
+                      matTooltip="Mover abajo">
+                <mat-icon>keyboard_arrow_down</mat-icon>
+              </button>
+              
+              <button mat-icon-button 
+                      color="warn"
+                      (click)="removeLayer(activeLayer.id)"
+                      matTooltip="Eliminar capa">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+          
+          <div class="layer-controls" *ngIf="activeLayer.active">
+            <div class="opacity-control">
+              <label>Opacidad: {{ getOpacityPercentage(activeLayer.style.opacity) }}%</label>
+              <input type="range"
+                     [value]="getOpacityPercentage(activeLayer.style.opacity)"
+                     (input)="onOpacityChange(activeLayer, +($any($event).target.value))"
+                     min="0" max="100" step="10"
+                     class="opacity-slider">
+            </div>
+
+            <div class="layer-tools">
+              <button mat-icon-button
+                      (click)="showLayerLegend(activeLayer)"
+                      matTooltip="Ver leyenda"
+                      class="tool-button">
+                <mat-icon>image</mat-icon>
+              </button>
+
+              <button mat-icon-button
+                      (click)="zoomToLayer(activeLayer)"
+                      matTooltip="Zoom a la capa"
+                      class="tool-button">
+                <mat-icon>my_location</mat-icon>
+              </button>
+
+              <button mat-icon-button
+                      (click)="showLayerInfo(activeLayer)"
+                      matTooltip="Información de la capa"
+                      class="tool-button">
+                <mat-icon>info</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Mensaje cuando no hay servicios -->
+  <mat-card *ngIf="backendWmsServices.length === 0 && !isLoadingBackendServices" class="empty-state">
+    <mat-card-content class="empty-content">
+      <mat-icon class="empty-icon">layers_clear</mat-icon>
+      <h3>No hay servicios WMS disponibles</h3>
+      <p>Configure primero servicios WMS en la sección "Servicios WMS" y luego haga clic en "Actualizar Servicios"</p>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Mensaje cuando no hay capas activas -->
+  <mat-card *ngIf="backendWmsServices.length > 0 && activeLayers.length === 0" class="empty-active-state">
+    <mat-card-content class="empty-content">
+      <mat-icon class="empty-icon">visibility_off</mat-icon>
+      <h3>No hay capas activas</h3>
+      <p>Active las capas que desea visualizar desde la lista de "Capas Disponibles"</p>
+    </mat-card-content>
+  </mat-card>
+</div>

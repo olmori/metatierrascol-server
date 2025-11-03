@@ -1,0 +1,1095 @@
+.map-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+
+    // Sidebar with controls
+    .sidebar {
+      width: 400px;
+      min-width: 350px;
+      max-width: 500px;
+      background-color: #fafafa;
+      border-right: none;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      resize: horizontal;
+
+      @media (max-width: 768px) {
+        width: 100%;
+        max-width: none;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .control-tabs {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        ::ng-deep .mat-mdc-tab-group {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+
+          .mat-mdc-tab-header {
+            flex-shrink: 0;
+          }
+
+          .mat-mdc-tab-body-wrapper {
+            flex: 1;
+            overflow: hidden;
+
+            .mat-mdc-tab-body {
+              height: 100%;
+
+              .mat-mdc-tab-body-content {
+                height: 100%;
+                overflow: auto;
+              }
+            }
+          }
+        }
+
+        .tab-content {
+          padding: 1rem;
+          height: 100%;
+          overflow: auto;
+
+          // GeoJSON upload styles
+          .geojson-upload-section {
+            h3 {
+              margin: 0 0 1rem 0;
+              color: #333;
+            }
+
+            .upload-area {
+              border: 2px dashed #ccc;
+              border-radius: 8px;
+              padding: 2rem;
+              text-align: center;
+              background-color: #fafafa;
+              transition: all 0.3s ease;
+              cursor: pointer;
+              margin-bottom: 1.5rem;
+
+              &:hover, &.drag-over {
+                border-color: #1976d2;
+                background-color: #e3f2fd;
+
+                mat-icon {
+                  color: #1976d2;
+                }
+              }
+
+              mat-icon {
+                font-size: 3rem;
+                width: 3rem;
+                height: 3rem;
+                margin-bottom: 1rem;
+                color: #999;
+                transition: color 0.3s ease;
+              }
+
+              p {
+                margin: 0.5rem 0;
+                color: #666;
+              }
+
+              button {
+                margin-top: 0.5rem;
+              }
+            }
+
+            .uploaded-files {
+              h4 {
+                margin: 0 0 0.5rem 0;
+                color: #333;
+                font-size: 1rem;
+                font-weight: 500;
+              }
+
+              .mat-mdc-list {
+                .mat-mdc-list-item {
+                  border-bottom: 1px solid #e0e0e0;
+                  margin-bottom: 0.5rem;
+                  
+                  &:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                  }
+
+                  .file-actions {
+                    display: flex;
+                    gap: 0.25rem;
+                    margin-left: auto;
+
+                    button {
+                      min-width: 36px;
+                      width: 36px;
+                      height: 36px;
+
+                      mat-icon {
+                        font-size: 18px;
+                        width: 18px;
+                        height: 18px;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Map section
+    .map-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+
+      .map-header {
+        background-color: #ffffff;
+        border-bottom: none;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+
+        h2 {
+          margin: 0;
+          color: #333;
+          font-size: 1.5rem;
+          font-weight: 500;
+        }
+
+        .map-controls {
+          display: flex;
+          gap: 0.5rem;
+
+          button {
+            min-width: 40px;
+            width: 40px;
+            height: 40px;
+
+            mat-icon {
+              font-size: 20px;
+              width: 20px;
+              height: 20px;
+            }
+          }
+        }
+      }
+
+      // OpenLayers map container
+      .ol-map {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        background-color: #f5f5f5;
+
+        // Override OpenLayers default styles
+        ::ng-deep {
+          .ol-control {
+            //background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 4px;
+            //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+            button {
+              background-color: transparent;
+              border: none;
+              color: #666;
+              cursor: pointer;
+              font-size: 1.2em;
+
+              &:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+                color: #333;
+              }
+            }
+          }
+
+          .ol-zoom {
+            top: 0.5em;
+            left: 0.5em;
+
+            .ol-zoom-in,
+            .ol-zoom-out {
+              width: 32px;
+              height: 32px;
+              font-size: 16px;
+              line-height: 30px;
+            }
+          }
+
+          .ol-attribution {
+            bottom: 0.5em;
+            right: 0.5em;
+            max-width: 300px;
+          }
+
+          .ol-scale-line {
+            display: none;
+            bottom: 0.5em;
+            left: 0.5em;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 4px;
+            padding: 2px 4px;
+          }
+
+          .ol-full-screen {
+            top: 0.5em;
+            right: 0.5em;
+
+            button {
+              width: 32px;
+              height: 32px;
+            }
+          }
+        }
+      }
+
+      // Loading overlay
+      .map-loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+
+        p {
+          margin-top: 1rem;
+          color: #666;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  /* Toolbar flotante arriba a la izquierda del mapa */
+.map-toolbar {
+  position: absolute;
+  top: 120px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.map-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;          // cuadrado redondeado
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #d3e3fd;
+  color: #002855;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+
+
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .map-container {
+    .main-content {
+      flex-direction: column;
+
+      .sidebar {
+        height: 300px;
+        width: 100%;
+        resize: vertical;
+      }
+
+      .map-section {
+        flex: 1;
+        min-height: 400px;
+
+        .map-header {
+          padding: 0.5rem;
+
+          h2 {
+            font-size: 1.2rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .map-container {
+    .main-content {
+      .sidebar {
+        height: 250px;
+
+        .tab-content {
+          padding: 0.5rem;
+
+          .geojson-upload-section {
+            .upload-area {
+              padding: 1rem;
+
+              mat-icon {
+                font-size: 2rem;
+                width: 2rem;
+                height: 2rem;
+              }
+            }
+          }
+        }
+      }
+
+      .map-section {
+        .map-header {
+          .map-controls {
+            button {
+              min-width: 36px;
+              width: 36px;
+              height: 36px;
+
+              mat-icon {
+                font-size: 18px;
+                width: 18px;
+                height: 18px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Fullscreen mode adjustments
+:fullscreen .map-container {
+  .main-content {
+    .sidebar {
+      width: 300px;
+      min-width: 250px;
+    }
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .map-container {
+    .sidebar {
+      border-right-color: #000;
+    }
+
+    .map-section .map-header {
+      border-bottom-color: #000;
+    }
+
+    .tab-content .geojson-upload-section .upload-area {
+      border-color: #000;
+
+      &:hover, &.drag-over {
+        border-color: #0066cc;
+      }
+    }
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .tab-content .geojson-upload-section .upload-area {
+    transition: none;
+
+    mat-icon {
+      transition: none;
+    }
+  }
+}
+
+// ==== AREA MANAGEMENT STYLES ====
+.area-management-section {
+  h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+
+  h4 {
+    margin: 0 0 0.75rem 0;
+    color: #444;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  h5 {
+    margin: 0 0 0.5rem 0;
+    color: #555;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+}
+
+// Drawing controls section
+.drawing-controls {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+
+  .drawing-buttons {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+
+    button {
+      &.active {
+        background-color: #1976d2 !important;
+        color: white !important;
+      }
+
+      mat-icon {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+
+  .drawing-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: #e3f2fd;
+    border-radius: 4px;
+    border-left: 4px solid #1976d2;
+
+    mat-icon {
+      color: #1976d2;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+
+    span {
+      color: #0d47a1;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// User registration form
+.user-registration-form {
+  margin-bottom: 2rem;
+
+  .mat-mdc-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    mat-form-field {
+      flex: 1;
+    }
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .coordinate-input-section {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+
+    mat-radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .manual-coordinates {
+      margin-top: 1rem;
+
+      .coordinate-input {
+        display: flex;
+        gap: 1rem;
+        align-items: end;
+        margin-bottom: 1rem;
+
+        @media (max-width: 768px) {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        mat-form-field {
+          flex: 1;
+        }
+      }
+
+      .coordinates-list {
+        background-color: white;
+        border-radius: 8px;
+        padding: 1rem;
+        border: 1px solid #ddd;
+
+        .mat-mdc-list {
+          .mat-mdc-list-item {
+            border-bottom: 1px solid #eee;
+            
+            &:last-child {
+              border-bottom: none;
+            }
+
+            button {
+              margin-left: auto;
+            }
+          }
+        }
+
+        .coordinate-actions {
+          display: flex;
+          gap: 0.5rem;
+          margin-top: 1rem;
+          justify-content: center;
+
+          @media (max-width: 768px) {
+            flex-direction: column;
+          }
+        }
+      }
+    }
+  }
+
+  .polygon-info {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background-color: #e8f5e8;
+    border-radius: 8px;
+    border-left: 4px solid #4caf50;
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+
+      .info-item {
+        font-size: 0.9rem;
+        
+        strong {
+          color: #2e7d32;
+        }
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+
+    button mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+// Registered areas section
+.registered-areas {
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  .areas-list {
+    .area-panel {
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+
+      .mat-expansion-panel-header {
+        padding: 1rem;
+
+        .mat-panel-title {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-weight: 500;
+          color: #333;
+
+          mat-icon {
+            color: #1976d2;
+          }
+        }
+
+        .mat-panel-description {
+          color: #666;
+          font-size: 0.9rem;
+        }
+      }
+
+      .area-details {
+        padding: 1rem;
+        border-top: 1px solid #eee;
+
+        .user-info {
+          margin-bottom: 1rem;
+
+          p {
+            margin: 0.25rem 0;
+            font-size: 0.9rem;
+            
+            strong {
+              color: #333;
+              font-weight: 500;
+            }
+          }
+        }
+
+        .area-actions {
+          display: flex;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+
+          @media (max-width: 768px) {
+            flex-direction: column;
+          }
+
+          button {
+            mat-icon {
+              margin-right: 0.25rem;
+              font-size: 18px;
+              width: 18px;
+              height: 18px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .empty-areas {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #666;
+
+    .empty-icon {
+      font-size: 4rem;
+      width: 4rem;
+      height: 4rem;
+      margin-bottom: 1rem;
+      color: #ccc;
+    }
+
+    h3 {
+      margin: 0 0 1rem 0;
+      color: #999;
+    }
+
+    p {
+      margin: 0;
+      font-style: italic;
+    }
+  }
+}
+
+// Drawing mode specific styles
+.drawing-mode-active {
+  cursor: crosshair !important;
+}
+
+// Error states
+.error-message {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+// Loading states
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+// Custom form field styles
+::ng-deep {
+  .mat-mdc-form-field {
+    .mat-mdc-text-field-wrapper {
+      background-color: white;
+    }
+    
+    &.mat-form-field-invalid {
+      .mat-mdc-text-field-wrapper {
+        border-color: #f44336;
+      }
+    }
+  }
+
+  .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  .mat-expansion-panel-body {
+    padding: 0;
+  }
+
+  // Custom radio button styles
+  .mat-radio-group {
+    .mat-radio-button {
+      margin-bottom: 0.5rem;
+      
+      .mat-radio-label {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+// ==== NEW AREA REGISTRATION STYLES ====
+
+.area-management-section {
+  padding: 16px;
+  
+  .registration-card {
+    margin-bottom: 24px;
+    
+    .section-header {
+      margin: 24px 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      h4 {
+        margin: 0;
+        color: #333;
+        font-weight: 500;
+      }
+      
+      mat-icon {
+        color: #1976d2;
+      }
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      
+      mat-form-field {
+        flex: 1;
+      }
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+    
+    .full-width {
+      width: 100%;
+    }
+    
+    .polygon-controls {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+    
+    .drawing-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background-color: #e3f2fd;
+      border-radius: 4px;
+      margin: 16px 0;
+      
+      mat-icon {
+        color: #1976d2;
+      }
+      
+      span {
+        color: #1565c0;
+        font-size: 14px;
+      }
+    }
+    
+    .polygon-info {
+      margin: 16px 0;
+      padding: 16px;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        
+        .info-item {
+          padding: 8px 12px;
+          background-color: white;
+          border-radius: 4px;
+          border-left: 4px solid #1976d2;
+          
+          strong {
+            color: #333;
+          }
+        }
+      }
+    }
+    
+    .geojson-section {
+      margin: 24px 0 16px 0;
+      
+      textarea {
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        line-height: 1.4;
+        background-color: #f8f9fa;
+      }
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #e0e0e0;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        
+        button {
+          width: 100%;
+        }
+      }
+    }
+  }
+  
+  .records-section {
+    margin-top: 32px;
+    
+    .no-records {
+      text-align: center;
+      padding: 48px 24px;
+      color: #666;
+      
+      .empty-icon {
+        font-size: 48px;
+        height: 48px;
+        width: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+      
+      h3 {
+        margin: 0 0 8px 0;
+        color: #333;
+      }
+      
+      p {
+        margin: 0;
+        font-size: 14px;
+      }
+    }
+    
+    .records-table {
+      width: 100%;
+      margin-top: 16px;
+      
+      .action-cell {
+        min-width: 180px;
+        text-align: center;
+        
+        button {
+          margin-right: 4px;
+          
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
+      
+      mat-header-cell {
+        font-weight: 600;
+        color: #333;
+      }
+      
+      mat-cell {
+        padding: 8px;
+        vertical-align: middle;
+      }
+      
+      mat-row:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+      
+      // Responsive table
+      @media (max-width: 768px) {
+        .mat-mdc-header-row,
+        .mat-mdc-row {
+          flex-direction: column;
+          align-items: stretch;
+          min-height: auto;
+          padding: 8px;
+        }
+        
+        .mat-mdc-cell,
+        .mat-mdc-header-cell {
+          border: none;
+          padding: 4px 8px;
+          
+          &:first-child {
+            border-top: 1px solid #e0e0e0;
+          }
+        }
+        
+        .mat-mdc-cell:before {
+          content: attr(data-label) ': ';
+          font-weight: 600;
+          margin-right: 8px;
+        }
+        
+        .action-cell {
+          justify-content: center;
+          min-width: auto;
+        }
+      }
+    }
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .drawing-controls .drawing-buttons button,
+  .area-panel {
+    transition: none;
+  }
+}
+
+// Print styles
+@media print {
+  .drawing-controls,
+  .form-actions,
+  .area-actions {
+    display: none;
+  }
+  
+  .area-management-section {
+    background: white;
+  }
+}
+
+/* Menú de mapas base (fondo blanco) */
+.basemap-menu {
+  position: absolute;
+  top: 368px;   /* ajusta según donde quieras que aparezca */
+  left: 12px;   /* un poco a la derecha de la toolbar */
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  padding: 8px 0;
+  z-index: 1100;  // por encima del mapa y de la toolbar
+  min-width: 220px;
+}
+
+/* cada opción del menú */
+.basemap-item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.basemap-item:hover {
+  background: #f2f5ff;
+}
+
+.basemap-icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+}
+
+
+
+.custom-card-title {
+  /* tamaño / peso extra si quieres */
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  /* color de texto (elige el que quieras) */
+  color: #CF7310;        // gris oscuro moderno
+  // o, si quieres usar el color primario de tu tema:
+  // color: var(--mdc-theme-primary);
+}
+
+
+.map-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 28px;
+    font-weight: 600;
+    color: #2c3e50;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #e67e22;
+
+    mat-icon {
+        font-size: 32px;
+        color: #e67e22;
+    }
+  }

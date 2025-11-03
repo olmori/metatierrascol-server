@@ -1,0 +1,9 @@
+<div class="scrollContent">
+    <div>
+        @for (message of getMessages();track message.id){
+            <div class="{{message.state}}">
+                <strong>{{message.time}}</strong>- {{message.state}}: {{message.message}}
+            </div>    
+        }
+    </div>
+</div>

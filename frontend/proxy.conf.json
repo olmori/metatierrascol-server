@@ -1,0 +1,20 @@
+{
+  "/wms-proxy": {
+    "target": "https://www.ign.es",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/wms-proxy": ""
+    },
+    "logLevel": "debug"
+  },
+  "/arcgis-proxy": {
+    "target": "https://image.discomap.eea.europa.eu",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/arcgis-proxy": ""
+    },
+    "logLevel": "debug"
+  }
+}

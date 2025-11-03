@@ -1,0 +1,57 @@
+<div class="flexbox-exterior-container">
+    <div class="flexbox-responsive-interior-container">
+        <div class="text-align-center">
+            @if (!authUserModel.isLoggedIn) {
+                <h5>Login. Introduzca sus credenciales</h5>
+            }@else{
+                <h5>Sesión iniciada. Si quiere iniciar otra sesión debe cerrar la sesión actual</h5>
+            }
+        </div>
+        @if(!authUserModel.isLoggedIn){
+            <form [formGroup]="controlsGroup">
+                <mat-form-field>
+                  <input matInput placeholder="URL de la API" [formControl]="urlDjangoApi" name="urlDjangoApi">
+                  <mat-error *ngIf="urlDjangoApi.hasError('required')">
+                    La url del servidor es obligatoria.
+                  </mat-error>
+                  <mat-error *ngIf="urlDjangoApi.hasError('minlength')">
+                    La url del servidor es demasiado corta.
+                  </mat-error>
+                </mat-form-field>
+            
+                <mat-form-field>
+                  <input matInput placeholder="Usuario" [formControl]="username" name="username">
+                  <mat-error *ngIf="username.hasError('required')">
+                    El usuario es obligatorio.
+                  </mat-error>
+                  <mat-error *ngIf="username.hasError('minlength')">
+                    El nombre del usuario es demasiado corto.
+                  </mat-error>
+                </mat-form-field>
+            
+                <mat-form-field>
+                  <input matInput type="password" placeholder="Contraseña" [formControl]="password" name="password">
+                  <mat-error *ngIf="password.hasError('required')">password
+                    El usuario es obligatorio.
+                  </mat-error>
+                  <mat-error *ngIf="password.hasError('minlength')">
+                    Contraseña demasiado corta.
+                  </mat-error>
+                </mat-form-field>
+                <div class="text-align-center">
+                    <button  matTooltip="Click para iniciar sesión" mat-raised-button [disabled]="!controlsGroup.valid" (click)="login()">Iniciar sesión</button>
+                    <button mat-raised-button class="blue" (click)="tooglePasswordResetEmail()">¿Olvidó su contraseña?</button>
+                </div>
+            </form>    
+        }
+         @if (componentMessages.length > 0){
+            <app-component-message [componentMessages]="componentMessages"></app-component-message>
+        } 
+    </div>
+</div>
+
+@if (showPasswordResetForm){
+  <app-password-reset-form></app-password-reset-form>
+}
+
+

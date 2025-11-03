@@ -1,0 +1,29 @@
+.exterior{
+    border-style: solid;
+    border-width: 1px;
+    border-color: #cf7310;
+    overflow: hidden;
+    flex-wrap: wrap;
+}
+.selector-flexbox-container{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+.width340{
+    width: 335px;
+    box-sizing: border-box;
+    padding: 10px;
+    overflow: hidden;
+}
+.padding10{
+    padding: 10px;
+    box-sizing: border-box;
+}
+.grid_container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+    
+    
+}

@@ -1,0 +1,14 @@
+<app-header></app-header>
+<div class="flexbox-exterior-container">
+    <div class="flexbox-responsive-interior-container-with100">
+                
+        @for (version of movileAppVersionModels;track $index){
+            <app-app-version [mobileAppVersionModel]="version"></app-app-version>
+        }
+
+        @if (componentMessages.length > 0){
+            <app-component-message [componentMessages]="componentMessages"></app-component-message>
+        } 
+    </div>
+</div>
+<app-footer></app-footer>

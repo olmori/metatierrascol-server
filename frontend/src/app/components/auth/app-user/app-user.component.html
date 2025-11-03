@@ -1,0 +1,94 @@
+<div class="flexbox-exterior-container">
+    <div class="flexbox-responsive-interior-container">
+        <div class="text-align-center">
+            <h5>Solicite un usuario para poder solicitar 
+                la regularización/restitución de sus propiedades</h5>
+        </div>
+
+        <form [formGroup]="controlsGroup">       
+            <mat-form-field>
+              <input matInput placeholder="Email: mi_email@mi_email.com" [formControl]="username" name="username">
+              @if(username.hasError('required')){<mat-error>El usuario es obligatorio.</mat-error>}
+              @if(username.hasError('minlength')){<mat-error>El nombre del usuario es demasiado corto.</mat-error>}
+            </mat-form-field>
+            <mat-form-field>
+                <textarea matInput placeholder="¿Para qué necesita un usuario en esta aplicación?" [formControl]="interest" name="interest"></textarea>
+                @if(interest.hasError('required')){<mat-error>Describir su interés es obligatorio.</mat-error>}
+                @if(interest.hasError('minlength')){<mat-error>Debe escribir alguna cosa más.</mat-error>}
+              </mat-form-field>
+            <mat-form-field>
+              <input matInput type="password" placeholder="Contraseña" [formControl]="passwordFormControl1" name="passwordFormControl1">
+              <mat-error *ngIf="passwordFormControl1.hasError('required')">password
+                El usuario es obligatorio.
+              </mat-error>
+              <mat-error *ngIf="passwordFormControl1.hasError('minlength')">
+                Contraseña demasiado corta.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <input matInput type="password" placeholder="Contraseña" [formControl]="passwordFormControl2" name="passwordFormControl2">
+                <mat-error *ngIf="passwordFormControl2.hasError('required')">password
+                  El usuario es obligatorio.
+                </mat-error>
+                <mat-error *ngIf="passwordFormControl2.hasError('minlength')">
+                  Contraseña demasiado corta.
+                </mat-error>
+              </mat-form-field>
+            <p>Demuestre que no es usted un robot. Escriba las letras que aparecen en la imagen:</p>
+            <div class="flex-row">
+                <img class="captcha" matTooltip="Escriba las letras de la imagen en el la caja de texto captcha"  src="{{srcImgCaptcha}}">
+                <mat-form-field class="width_200px">
+                    <input matInput placeholder="Letras en la imagen" [formControl]="captcha_1">
+                    <mat-error *ngIf="captcha_1.hasError('required')">
+                        Introduzca el texto que se ve en la imagen
+                    </mat-error>
+                </mat-form-field>    
+            </div>
+
+            <h5>1. Autorización para el tratamiento de datos personales</h5>
+
+            <p>De acuerdo con lo dispuesto en el artículo 5 de la Ley Orgánica 
+                15/1999 de 13 de diciembre, sobre Protección de datos de carácter personal, 
+                el grupo CCASAT, responsable del proyecto MetaTierras Colombia, 
+                de la Universitat Politécnica de València, España, en adelante UPV, 
+                le informa que los datos de carácter personal, y toda la información 
+                relacionada con usted, serán almacenados, y tratados en una base de 
+                datos con el único 
+                fin de proporcionar servicios en su propio interés.</p>
+            <p>Valoramos su confianza al brindarnos su Información personal. 
+                Pero recuerde que ningún método de transmisión a través de Internet 
+                o método de transmisión electrónica el almacenamiento es 100% 
+                seguro y confiable, y no podemos garantizar su absoluta seguridad</p>
+            <p>Usted usa el software y el servicio de almacenamiento de la UPV bajo 
+                su propia responsabilidad, eximiendo al grupo CCASAT de la UPV 
+                de cualquier responsabilidad por pérdida, o extravío, acceso indebido 
+                que se pueda producir sobre sus datos</p>
+            <p>Usted podrá ejercer, en todo momento y de conformidad con la legislación 
+                vigente, sus derechos de acceso, eliminación y rectificación mediante 
+                solicitud dirigida al responsable de la base de datos (ccasat&#64;upv.es)</p>
+            
+            <h5>2. Autorización para el envío de notificaciones por correo 
+                    electrónico</h5>
+            
+            <p>Usted acepta que nos pongamos en comunicación con usted a través de 
+                email u otro medio, siempre en su propio interés, con el objetivo 
+                de regularizar su propiedad.</p>
+            
+            <span><input type="checkbox" [formControl]="checkAcceptDataPolicy" #accept_data (change)="changeAcceptdata(accept_data)"> Acepto el tratamiento de mis datos persionales</span>
+            <br>
+            <span><input type="checkbox" [formControl]="checkAcceptEmailNotifications" #accept_notification (change)="changeAcceptNotification(accept_notification)"> Acepto recibir notificaciones por email</span>
+            
+            <div class="flexbox-exterior-container">
+                <button  matTooltip="Enviar datos" mat-raised-button [disabled]="!controlsGroup.valid || !notification_acceptation || !data_acceptation" (click)="addUser()">Solicitar</button>
+            </div>
+        </form>   
+        @if (componentMessages.length > 0){
+            <app-component-message [componentMessages]="componentMessages"></app-component-message>
+        } 
+    </div>
+
+</div>
+
+
+

@@ -1,0 +1,401 @@
+<app-header></app-header>
+
+<div class="map-container">
+  <!-- Contenedor principal con sidebar y mapa -->
+  <div class="main-content">
+    <!-- Sidebar con controles -->
+    <div class="sidebar">
+      <mat-tab-group class="control-tabs">
+        <!-- Pestaña para gestión de servicios SDI -->
+        <mat-tab label="Servicios WMS">
+          <div class="tab-content">
+            <app-sdi-server
+              [backendServices]="wmsServices"
+              [isLoadingBackendServices]="isLoadingWmsServices"
+              (backendServiceSaved)="onBackendServiceSaved()">
+            </app-sdi-server>
+          </div>
+        </mat-tab>
+        
+        <!-- Pestaña para control de capas WMS -->
+        <mat-tab label="Capas">
+          <div class="tab-content">
+            <app-wms-layer
+              (layerToggled)="onLayerToggled($event)"
+              (layerStyleChanged)="onLayerStyleChanged($event)"
+              (layersOrderChanged)="onLayersOrderChanged($event)"
+              (zoomToLayerRequested)="onZoomToLayerRequested($event)">
+            </app-wms-layer>
+          </div>
+        </mat-tab>
+
+        <!-- Pestaña para carga de GeoJSON -->
+        <mat-tab label="GeoJSON">
+          <div class="tab-content">
+            <div class="geojson-upload-section">
+              <!--<h3>Cargar Archivos GeoJSON</h3>-->
+              <mat-card-title class="mat-headline-6 custom-card-title">
+  Cargar Archivos GeoJSON
+</mat-card-title>
+<h3> </h3>
+              
+              <div class="upload-area" 
+                   (dragover)="onDragOver($event)" 
+                   (dragleave)="onDragLeave($event)"
+                   (drop)="onFileDrop($event)"
+                   [class.drag-over]="isDragOver">
+                <mat-icon>cloud_upload</mat-icon>
+                <p>Arrastra archivos GeoJSON aquí o</p>
+                <button mat-raised-button color="primary" (click)="fileInput.click()">
+                  Seleccionar Archivo
+                </button>
+                <input #fileInput 
+                       type="file" 
+                       accept=".geojson,.json" 
+                       multiple
+                       (change)="onFileSelected($event)"
+                       style="display: none;">
+              </div>
+
+              <div class="uploaded-files" *ngIf="geoJSONUploads.length > 0">
+                <h4>Archivos Cargados</h4>
+                <mat-list>
+                  <mat-list-item *ngFor="let upload of geoJSONUploads">
+                    <mat-icon matListItemIcon>description</mat-icon>
+                    <div matListItemTitle>{{ upload.name }}</div>
+                    <div matListItemLine>
+                      {{ upload.features.length }} feature(s) | {{ upload.uploadDate | date:'short' }}
+                    </div>
+                    <div class="file-actions">
+                      <button mat-icon-button 
+                              color="primary"
+                              (click)="viewGeoJSON(upload)"
+                              matTooltip="Ver polígonos en mapa">
+                        <mat-icon>visibility</mat-icon>
+                      </button>
+                      <button mat-icon-button 
+                              color="warn"
+                              (click)="removeGeoJSON(upload.id)"
+                              matTooltip="Eliminar archivo">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </mat-list-item>
+                </mat-list>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Pestaña para gestión de áreas integrada -->
+        <!--
+        <mat-tab label="Gestión de Áreas">
+          <div class="tab-content">
+            <div class="area-management-section">
+              <h3>Registro de Áreas de Usuario</h3>
+              
+
+              <mat-card class="registration-card">
+                <mat-card-header>
+                  <mat-card-title>{{ editingAreaId ? 'Editar' : 'Nuevo' }} Registro de Área</mat-card-title>
+                  <mat-card-subtitle>Complete todos los datos para registrar el área</mat-card-subtitle>
+                </mat-card-header>
+                
+                <mat-card-content>
+                  <form [formGroup]="areaRegistrationForm">
+                    <div class="section-header">
+                      <h4><mat-icon>person</mat-icon> Datos Personales</h4>
+                    </div>
+                    
+                    <div class="form-row">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Nombres</mat-label>
+                        <input matInput formControlName="nombres" placeholder="Nombres completos">
+                        <mat-error *ngIf="areaRegistrationForm.get('nombres')?.hasError('required')">
+                          Los nombres son obligatorios
+                        </mat-error>
+                      </mat-form-field>
+                      
+                      <mat-form-field appearance="outline">
+                        <mat-label>Apellidos</mat-label>
+                        <input matInput formControlName="apellidos" placeholder="Apellidos completos">
+                        <mat-error *ngIf="areaRegistrationForm.get('apellidos')?.hasError('required')">
+                          Los apellidos son obligatorios
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    
+                    <div class="form-row">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Tipo de Documento</mat-label>
+                        <mat-select formControlName="tipoDocumento">
+                          <mat-option value="">Seleccione un tipo</mat-option>
+                          <mat-option value="CC">Cédula de Ciudadanía</mat-option>
+                          <mat-option value="TI">Tarjeta de Identidad</mat-option>
+                          <mat-option value="CE">Cédula de Extranjería</mat-option>
+                          <mat-option value="PP">Pasaporte</mat-option>
+                          <mat-option value="DNI">DNI</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="areaRegistrationForm.get('tipoDocumento')?.hasError('required')">
+                          Seleccione el tipo de documento
+                        </mat-error>
+                      </mat-form-field>
+                      
+                      <mat-form-field appearance="outline">
+                        <mat-label>Número de Documento</mat-label>
+                        <input matInput formControlName="numeroDocumento" placeholder="Número de identificación">
+                        <mat-error *ngIf="areaRegistrationForm.get('numeroDocumento')?.hasError('required')">
+                          El número de documento es obligatorio
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    
+                    <mat-form-field appearance="outline" class="full-width">
+                      <mat-label>Dirección</mat-label>
+                      <input matInput formControlName="direccion" placeholder="Dirección completa del predio">
+                      <mat-error *ngIf="areaRegistrationForm.get('direccion')?.hasError('required')">
+                        La dirección es obligatoria
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-divider></mat-divider>
+                    <div class="section-header">
+                      <h4><mat-icon>draw</mat-icon> Definición del Polígono</h4>
+                    </div>
+                    
+                    <div class="polygon-controls">
+                      <button mat-raised-button 
+                              color="primary"
+                              type="button"
+                              (click)="startDrawingPolygon()"
+                              [disabled]="!isMapReady || isDrawingActive"
+                              *ngIf="!hasPolygonDrawn">
+                        <mat-icon>draw</mat-icon>
+                        Dibujar Polígono en Mapa
+                      </button>
+                      
+                      <button mat-raised-button 
+                              color="accent"
+                              type="button"
+                              (click)="startDrawingPolygon()"
+                              [disabled]="!isMapReady || isDrawingActive"
+                              *ngIf="hasPolygonDrawn">
+                        <mat-icon>edit</mat-icon>
+                        Redibujar Polígono
+                      </button>
+                    </div>
+
+                    <div class="drawing-status" *ngIf="isDrawingActive">
+                      <mat-icon color="primary">info</mat-icon>
+                      <span>Haga clic en el mapa para dibujar los puntos del polígono. Haga clic en el último punto para cerrar y finalizar.</span>
+                    </div>
+
+                    <div class="polygon-info" *ngIf="polygonInfo">
+                      <div class="info-grid">
+                        <div class="info-item">
+                          <strong>Área:</strong> {{ formatArea(polygonInfo.area) }}
+                        </div>
+                        <div class="info-item">
+                          <strong>Perímetro:</strong> {{ formatLength(polygonInfo.perimeter) }}
+                        </div>
+                        <div class="info-item">
+                          <strong>Puntos:</strong> {{ polygonInfo.coordinates.length }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="geojson-section">
+                      <mat-divider></mat-divider>
+                      <div class="section-header">
+                        <h4><mat-icon>code</mat-icon> GeoJSON Generado</h4>
+                      </div>
+                      <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Estructura GeoJSON</mat-label>
+                        <textarea matInput 
+                                  readonly
+                                  rows="8"
+                                  [value]="generatedGeoJSON || ''"
+                                  [placeholder]="hasPolygonDrawn ? 'GeoJSON generado automáticamente' : 'El GeoJSON se generará automáticamente al dibujar el polígono'">
+                        </textarea>
+                        <mat-hint>{{ hasPolygonDrawn ? 'Este archivo se puede descargar después de guardar el registro' : 'Complete el dibujo del polígono para generar el GeoJSON' }}</mat-hint>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="form-actions">
+                      <button mat-raised-button 
+                              color="primary" 
+                              type="button"
+                              (click)="saveAreaRegistration()"
+                              [disabled]="!canSaveRegistration()">
+                        <mat-icon>save</mat-icon>
+                        {{ editingAreaId ? 'Actualizar' : 'Guardar' }} Registro
+                      </button>
+                      
+                      <button mat-stroked-button 
+                              type="button" 
+                              (click)="cancelAreaRegistration()">
+                        <mat-icon>cancel</mat-icon>
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                </mat-card-content>
+              </mat-card>
+
+              <div class="records-section">
+                <mat-divider></mat-divider>
+                <div class="section-header">
+                  <h4><mat-icon>table_chart</mat-icon> Registros de Áreas ({{ registeredAreas.length }})</h4>
+                </div>
+                
+                <div *ngIf="registeredAreas.length === 0" class="no-records">
+                  <mat-icon class="empty-icon">folder_open</mat-icon>
+                  <h3>No hay registros</h3>
+                  <p>Cree su primer registro completando el formulario anterior</p>
+                </div>
+
+                <mat-table [dataSource]="registeredAreas" class="records-table" *ngIf="registeredAreas.length > 0">
+                  
+                  <ng-container matColumnDef="nombres">
+                    <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.nombres }}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="apellidos">
+                    <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.apellidos }}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="tipoDocumento">
+                    <mat-header-cell *matHeaderCellDef>Tipo Doc.</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.tipoDocumento }}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="numeroDocumento">
+                    <mat-header-cell *matHeaderCellDef>Número Doc.</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.numeroDocumento }}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="direccion">
+                    <mat-header-cell *matHeaderCellDef>Dirección</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.direccion }}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="area">
+                    <mat-header-cell *matHeaderCellDef>Área</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ formatArea(element.area || 0) }}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="action-cell">
+                      <button mat-icon-button 
+                              color="accent"
+                              (click)="editRecord(element)"
+                              matTooltip="Editar">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      
+                      <button mat-icon-button 
+                              color="primary"
+                              (click)="downloadGeoJSON(element)"
+                              matTooltip="Descargar GeoJSON">
+                        <mat-icon>download</mat-icon>
+                      </button>
+                      
+                      <button mat-icon-button 
+                              color="warn"
+                              (click)="deleteRecord(element)"
+                              matTooltip="Eliminar">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </mat-cell>
+                  </ng-container>
+
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                  
+                </mat-table>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        -->
+      </mat-tab-group>
+    </div>
+
+    <!-- Contenedor del mapa -->
+<div class="map-section">
+  <div class="map-header">
+    <h2 class="map-title">
+    <mat-icon>map</mat-icon>
+    Visor de Mapas - MetaTierras
+</h2>
+    <div class="map-controls">
+      <button mat-icon-button 
+              (click)="resetMapView()"
+              matTooltip="Restaurar vista">
+        <mat-icon>home</mat-icon>
+      </button>
+      <button mat-icon-button 
+              (click)="toggleFullscreen()"
+              matTooltip="Pantalla completa">
+        <mat-icon>fullscreen</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- 🔽🔽 NUEVA TOOLBAR SOBRE EL MAPA 🔽🔽 -->
+  <div class="map-toolbar">
+  <button class="map-btn" (click)="zoomIn()" matTooltip="Acercar">
+    <mat-icon>add</mat-icon>
+  </button>
+
+  <button class="map-btn" (click)="zoomOut()" matTooltip="Alejar">
+    <mat-icon>remove</mat-icon>
+  </button>
+
+  <button class="map-btn accent" (click)="startDrawingPolygon()" matTooltip="Dibujar polígono">
+    <mat-icon>draw</mat-icon>
+  </button>
+   <!-- Botón que abre/cierra el menú de mapas base -->
+  <button class="map-btn" (click)="toggleBaseMapMenu()" title="Cambiar mapa base">
+    <mat-icon>layers</mat-icon>
+  </button>
+</div>
+<!-- Menú de mapas base (sin Angular Material) -->
+<div class="basemap-menu" *ngIf="baseMapMenuOpen">
+  <button class="basemap-item" (click)="setBaseMap('google_streets')">
+    <span class="basemap-icon">🌐</span>
+    <span>Google Maps</span>
+  </button>
+
+  <button class="basemap-item" (click)="setBaseMap('google_satellite')">
+    <span class="basemap-icon">🛰️</span>
+    <span>Google Satélite</span>
+  </button>
+
+  <button class="basemap-item" (click)="setBaseMap('osm')">
+    <span class="basemap-icon">🌍</span>
+    <span>OpenStreetMap</span>
+  </button>
+</div>
+
+  <!-- 🔼🔼 NUEVA TOOLBAR SOBRE EL MAPA 🔼🔼 -->
+
+  <div #mapContainer id="ol-map" class="ol-map"></div>
+
+  <div class="map-loading" *ngIf="isMapLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando mapa...</p>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<app-footer></app-footer>
+
+
+<!-- Menú de mapas base -->
+

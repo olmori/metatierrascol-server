@@ -1,0 +1,223 @@
+<!--TOP MENU-->
+<div class="horizontal-menu">
+    <div class="menu-container">
+        <div class="menu-left-container">
+            <div class="menu-left-buton-burguer">
+                @if (!appDrawerLeft.opened){
+                    <button class="normal-menu-item" routerLinkActive="mat-accent" (click)="toggleAppDrawerLeft()" mat-icon-button><mat-icon>menu</mat-icon></button>
+                }@else {
+                    <button class="normal-menu-item" routerLinkActive="mat-accent" (click)="toggleAppDrawerLeft()" ><mat-icon>close</mat-icon></button>
+                }
+            </div>
+            <!--USER MENU-->
+            <div class="menu-left-menu-options hide-less-500">
+                <button matTooltip="Inicio" class="normal-menu-item" routerLinkActive="mat-accent" routerLink="home">Inicio</button>
+                <button *ngIf="isSimpleAuthLoggedIn()" matTooltip="Mostrar mapa" class="normal-menu-item" routerLinkActive="mat-accent" routerLink="map">Mapa</button>
+                <button matTooltip="Descargar la app" class="normal-menu-item" routerLinkActive="mat-accent" routerLink="last_app_version">App</button>
+                <button 
+                    *showForRoles="getAllowedRoles('app.component.user_menu')"
+                    mat-icon-button 
+                    [matMenuTriggerFor]="userMenu" 
+                    #userMenuTrigger="matMenuTrigger" 
+                    matTooltip="Menu de usuario" 
+                    (click)="userMenuTrigger.openMenu()" 
+                    class="normal-menu-item">Menú
+                </button>
+                    <mat-menu #userMenu="matMenu" [overlapTrigger]="false">
+                        <button mat-menu-item class="mat-menu-item" routerLink="remove_sessions">
+                            Cerrar sesiones
+                        </button>    
+                        <button mat-menu-item class="mat-menu-item" routerLink="baunit_list" [queryParams]="{mode: 'creado_por'}">
+                            Listar mis propiedades
+                        </button>  
+                    </mat-menu>
+                <!--FIN USER MENU-->
+                <button 
+                    *showForRoles="getAllowedRoles('app.component.admin_menu')"
+                    mat-icon-button 
+                    [matMenuTriggerFor]="adminMenu" 
+                    #adminMenuTrigger="matMenuTrigger" 
+                    (click)="adminMenuTrigger.openMenu()" 
+                    class="normal-menu-item">Admin
+                </button>
+                    <!--ADMIN MENU-->
+                    <mat-menu class="matmenu" #adminMenu="matMenu" [overlapTrigger]="false">
+                        <span>
+                            <!--
+                            <button mat-menu-item class="mat-menu-item" (click)="navigateToAdmin()">
+                                Sitio de administracion
+                            </button>
+                            -->
+                            <button mat-menu-item class="mat-menu-item" routerLink="manage_django_and_app_users">
+                                Gestionar usuarios
+                            </button>                            
+                            <button mat-menu-item class="mat-menu-item" routerLink="api_settings">
+                                Configurar servidor
+                            </button>                            
+                            <button mat-menu-item 
+                                matTooltip="Menú de gestión de app"
+                                [matMenuTriggerFor]="appMenu" 
+                                #appMenuTrigger="matMenuTrigger" 
+                                matTooltip="Administración de app" 
+                                (click)="appMenuTrigger.openMenu()" 
+                                class="mat-menu-item"
+                            >
+                                App
+                            </button>
+
+                            <mat-menu #appMenu="matMenu" [overlapTrigger]="false">
+                                
+                                    <button mat-menu-item class="mat-menu-item" routerLink="add_app_version">
+                                        Añadir versión
+                                    </button>                            
+                                    <button mat-menu-item class="mat-menu-item" routerLink="manage_app_versions">
+                                        Gestionar versiones
+                                    </button>
+                            
+                            </mat-menu>
+                            <button mat-menu-item class="mat-menu-item"  routerLink="baunit_list" [queryParams]="{mode: 'admin'}">
+                                Ver todos los predios
+                            </button>
+    
+                        </span>
+                    </mat-menu>
+                    <!--END OF ADMIN MENU-->
+                <button matTooltip="Ayuda" cdkMenuItem class="normal-menu-item" routerLinkActive="mat-accent" routerLink="help">Ayuda</button>
+                <button matTooltip="Acerca de" cdkMenuItem class="normal-menu-item" routerLinkActive="mat-accent" routerLink="about">Acerca de</button>
+            </div>
+
+        </div>
+        <div class="menu-right">
+            @if (authUserModel.isLoggedIn){
+                <div>
+                    <div class="color-white">
+                        <span matTooltip="Nombre de usuario">U: {{authUserModel.username}}. </span>
+                        <span matTooltip="Número de sesiones abiertas">S: {{authUserModel.opened_sessions}}</span>
+                    </div>
+                    <div matTooltip="{{authUserModel.getGroupsAsString()}}" class="color-white">Grupos: {{authUserModel.groups[0]}}, ...</div>
+                </div>
+            }
+            
+            <!-- Simple Auth User Info -->
+            @if (currentUser && isSimpleAuthLoggedIn()){
+                <div>
+                    <div class="color-white">
+                        <span matTooltip="Usuario logueado" class="login-content"><mat-icon>account_circle</mat-icon> Usuario: {{currentUser.username}}</span>
+                        
+                    </div>
+                    @if (currentUser.groups && currentUser.groups.length > 0) {
+                        <div class="color-white">
+                            <span matTooltip="Grupos">Grupos: {{currentUser.groups[0]}}, ...</span>
+                        </div>
+                    }
+                </div>
+            }
+            
+            <div>
+                @if (authUserModel.isLoggedIn){
+                    <button matTooltip="Cerrar sesión" cdkMenuItem class="normal-menu-item login-buttons" routerLink="logout">
+                        <mat-icon style="transform:rotate(180deg);">logout</mat-icon>
+                        Iniciar sesión
+                    </button>
+                }@else if (isSimpleAuthLoggedIn()) {
+                    <button matTooltip="Cerrar sesión" cdkMenuItem class="normal-menu-item login-buttons" (click)="logout()">
+                        <div class="login-content">
+                        <mat-icon style="transform:rotate(-90deg);">logout</mat-icon>
+                        Cerrar sesión
+                        </div>
+                    </button>
+                }@else {
+                    <button *ngIf="!isSimpleAuthLoggedIn()" matTooltip="Iniciar sesión" cdkMenuItem class="normal-menu-item login-buttons" (click)="openAuthDialog()">
+                        <div class="login-content">
+                            <mat-icon class="login-icon">account_circle</mat-icon>
+                        Iniciar sesión
+                        </div>
+                    </button>    
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<mat-drawer-container class="mat-drawer-container" hasBackdrop="false">
+    <!--LEFT SIDENAV-->
+    <mat-drawer #appDrawerLeft class="drawer-left" mode="over" opened="false" position="start">
+        <div class="drawer-left-menu-options border-top-white" cdkMenu>
+            <button class="vertical-menu-item" routerLinkActive="mat-accent" routerLink="home" (click)="toggleAppDrawerLeft()"><mat-icon class="padding-rigth-10" >home</mat-icon>Inicio</button>
+            <button *ngIf="isSimpleAuthLoggedIn()" class="vertical-menu-item" routerLinkActive="mat-accent" routerLink="map" (click)="toggleAppDrawerLeft()"><mat-icon class="padding-rigth-10" >map</mat-icon>Mapa</button>
+            <button class="vertical-menu-item" routerLinkActive="mat-accent" routerLink="last_app_version" (click)="toggleAppDrawerLeft()"><mat-icon class="padding-rigth-10">get_app</mat-icon>App</button>
+            <button 
+                mat-icon-button 
+                *showForRoles="getAllowedRoles('app.component.user_menu')"
+                #sidenavUserMenuTrigger="matMenuTrigger" 
+                [matMenuTriggerFor]="sidenavUserMenu" 
+                (click)="sidenavUserMenuTrigger.openMenu()"
+                class="vertical-menu-item">
+                <mat-icon>keyboard_arrow_right</mat-icon><span>Menu</span>
+            </button>
+                <mat-menu #sidenavUserMenu="matMenu">
+                    
+                        <button mat-menu-item class="mat-menu-item" routerLink="remove_sessions" (click)="toggleAppDrawerLeft()">
+                            Cerrar todas mis sesiones
+                        </button>
+                        <button mat-menu-item class="mat-menu-item" routerLink="baunit_list" [queryParams]="{mode: 'creado_por'}" (click)="toggleAppDrawerLeft()">
+                            Listar mis propiedades
+                        </button>
+                    
+                </mat-menu>  
+
+            <button class="vertical-menu-item" routerLinkActive="mat-accent" routerLink="help" (click)="toggleAppDrawerLeft()"><mat-icon class="padding-rigth-10" >help</mat-icon>Ayuda</button>
+            <button class="vertical-menu-item" routerLinkActive="mat-accent" routerLink="about" (click)="toggleAppDrawerLeft()"><mat-icon class="padding-rigth-10">people</mat-icon>Acerca de</button>
+            <button 
+                mat-icon-button 
+                *showForRoles="getAllowedRoles('app.component.admin_menu')"
+                [matMenuTriggerFor]="sidenavAdminMenu" 
+                #sidenavAdminMenuTrigger="matMenuTrigger" 
+                (click)="sidenavAdminMenuTrigger.openMenu()"
+                class="vertical-menu-item"
+            >
+                <mat-icon>keyboard_arrow_right</mat-icon><span>Admin</span>
+            </button>
+                <mat-menu #sidenavAdminMenu="matMenu">
+                        <button mat-menu-item class="mat-menu-item"  routerLink="manage_django_and_app_users" (click)="toggleAppDrawerLeft()">
+                            Gestionar usuarios
+                        </button>
+                        <button mat-menu-item class="mat-menu-item"  routerLink="api_settings" (click)="toggleAppDrawerLeft()">
+                            Configurar servidor
+                        </button>
+                        <button mat-menu-item class="mat-menu-item"  routerLink="add_app_version" (click)="toggleAppDrawerLeft()">
+                            App. Añadir versión
+                        </button>                            
+                        <button mat-menu-item class="mat-menu-item"  routerLink="manage_app_versions" (click)="toggleAppDrawerLeft()">
+                            App. Gestionar versiones
+                        </button>
+                        <button mat-menu-item class="mat-menu-item"  routerLink="baunit_list" [queryParams]="{mode: 'admin'}" (click)="toggleAppDrawerLeft()">
+                            Ver todos los predios
+                        </button>
+                        
+                </mat-menu>
+        </div>     
+    </mat-drawer>
+
+    <!--RIGT SIDENAV - DISABLED -->
+    <!--
+    <mat-drawer #appDrawerRight class="drawer-right" mode="over" opened="false" position="end">
+        <div class="menu-container border-top-white">
+            <div class="menu-left-menu-options" cdkMenu>
+                <button cdkMenuItem class="normal-menu-item" routerLinkActive="mat-accent" [routerLink]="['',{outlets: {right_sidenav:['baunit'] }}]">Predio</button>
+                <button cdkMenuItem class="normal-menu-item" routerLinkActive="mat-accent" [routerLink]="['',{outlets: {right_sidenav:['party'] }}]">Propietarios</button>
+                <button cdkMenuItem class="normal-menu-item" routerLinkActive="mat-accent" [routerLink]="['',{outlets: {right_sidenav:['source'] }}]">Documentos</button>
+                <button cdkMenuItem class="normal-menu-item" routerLinkActive="mat-accent" [routerLink]="['',{outlets: {right_sidenav:['image'] }}]">Imágenes</button>
+            </div>     
+        </div>
+        <router-outlet name="right_sidenav"></router-outlet>
+    </mat-drawer>
+    -->
+    <mat-drawer-content class="back-ground-color-gray">
+        <div class="height100">
+            <!-- @if (showMessages){ <app-global-message></app-global-message>} -->
+            <router-outlet></router-outlet>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>
+<footer></footer>
